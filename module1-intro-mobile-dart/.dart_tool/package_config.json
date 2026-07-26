@@ -1,0 +1,16 @@
+{
+  "configVersion": 2,
+  "packages": [
+    {
+      "name": "module1_intro_mobile_dart",
+      "rootUri": "../",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    }
+  ],
+  "generator": "pub",
+  "generatorVersion": "3.12.0",
+  "flutterRoot": "file:///C:/developer_tools/fvm_repositories/versions/3.44.0",
+  "flutterVersion": "3.44.0",
+  "pubCache": "file:///C:/Users/Manivannan%20G/AppData/Local/Pub/Cache"
+}

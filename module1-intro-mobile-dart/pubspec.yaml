@@ -1,0 +1,5 @@
+name: module1_intro_mobile_dart
+description: Module 1 - Introduction to Mobile App Development and Dart (training materials)
+version: 1.0.0
+environment:
+  sdk: '>=3.0.0 <4.0.0'

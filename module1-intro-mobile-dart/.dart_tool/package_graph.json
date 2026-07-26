@@ -1,0 +1,14 @@
+{
+  "roots": [
+    "module1_intro_mobile_dart"
+  ],
+  "packages": [
+    {
+      "name": "module1_intro_mobile_dart",
+      "version": "1.0.0",
+      "dependencies": [],
+      "devDependencies": []
+    }
+  ],
+  "configVersion": 1
+}
