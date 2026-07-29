@@ -37,6 +37,14 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  int _incrementCounter2() {
+    /*setState(() {
+      _counter++;
+    });*/
+    _counter++;;
+    return _counter;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,6 +61,14 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+            Spacer(),
+            ElevatedButton(onPressed: () {
+              setState(() {
+                _counter = _incrementCounter2();
+              });
+              // _incrementCounter2;
+            }, child: Text("Increment")),
+            SizedBox(height: 20)
           ],
         ),
       ),
