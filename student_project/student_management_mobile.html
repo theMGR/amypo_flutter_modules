@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classroom — student management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/@tabler/icons-webfont/3.31.0/tabler-icons.min.css">
+<style>
+  :root{
+    --ink:#1c2027;
+    --ink-soft:#5a6270;
+    --ink-mute:#9298a3;
+    --paper:#f4f2ee;
+    --card:#ffffff;
+    --line:#e6e3dc;
+    --moss:#3f5d4e;
+    --moss-soft:#e7ede9;
+    --clay:#b5603f;
+    --clay-soft:#f4e3da;
+    --amber:#a9772f;
+    --amber-soft:#f6ecd9;
+    --red:#a23b3b;
+    --red-soft:#f5e0e0;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:#e9e6df;
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:32px 16px 60px;
+    min-height:100vh;
+  }
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif; font-weight:600; margin:0;}
+  .wrap{width:100%; max-width:1000px;}
+  .heading{
+    text-align:center;
+    margin-bottom:28px;
+  }
+  .heading .eyebrow{
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--moss);
+    font-weight:600;
+    margin-bottom:8px;
+  }
+  .heading h1{font-size:26px;}
+  .heading p{color:var(--ink-soft); font-size:14px; margin-top:6px;}
+
+  .frames{
+    display:flex;
+    flex-wrap:wrap;
+    gap:28px;
+    justify-content:center;
+  }
+  .frame-block{display:flex; flex-direction:column; align-items:center; gap:12px;}
+  .frame-label{font-size:12px; color:var(--ink-mute); letter-spacing:.06em; text-transform:uppercase;}
+
+  .phone{
+    width:340px;
+    height:700px;
+    background:var(--paper);
+    border-radius:34px;
+    border:1px solid #d8d4ca;
+    box-shadow:0 24px 40px -20px rgba(28,32,39,.35);
+    overflow:hidden;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+  }
+  .notch{
+    position:absolute; top:10px; left:50%; transform:translateX(-50%);
+    width:90px; height:18px; background:var(--ink); border-radius:12px; z-index:5;
+  }
+  .statusbar{height:40px; flex-shrink:0;}
+
+  .screen{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    overflow-y:auto;
+    padding-bottom:0;
+  }
+  .screen::-webkit-scrollbar{display:none;}
+
+  /* ---- top bar ---- */
+  .topbar{
+    padding:6px 20px 14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .topbar h2{font-size:20px;}
+  .icon-btn{
+    width:34px; height:34px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--card); border:1px solid var(--line);
+    cursor:pointer; color:var(--ink); font-size:16px;
+  }
+  .icon-btn.ghost{background:transparent; border:none;}
+  .icon-btn:hover{border-color:var(--moss);}
+
+  /* ---- search + filters ---- */
+  .search{
+    margin:0 20px 12px;
+    position:relative;
+  }
+  .search input{
+    width:100%;
+    padding:10px 12px 10px 34px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    background:var(--card);
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    color:var(--ink);
+  }
+  .search input:focus{outline:2px solid var(--moss); outline-offset:1px;}
+  .search i{position:absolute; left:11px; top:50%; transform:translateY(-50%); color:var(--ink-mute); font-size:15px;}
+
+  .chips{display:flex; gap:8px; margin:0 20px 10px; overflow-x:auto;}
+  .chip{
+    font-size:12px; padding:6px 12px; border-radius:20px; white-space:nowrap;
+    background:var(--card); border:1px solid var(--line); color:var(--ink-soft); cursor:default;
+  }
+  .chip.active{background:var(--moss); color:#fff; border-color:var(--moss);}
+
+  /* ---- student rows ---- */
+  .list{padding:0 12px;}
+  .row{
+    display:flex; align-items:center; gap:12px;
+    padding:11px 8px;
+    border-radius:12px;
+    cursor:pointer;
+    transition:background .12s;
+  }
+  .row:hover{background:var(--card);}
+  .avatar{
+    width:40px; height:40px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:600; font-size:13px; flex-shrink:0;
+    font-family:'Space Grotesk',sans-serif;
+  }
+  .row-info{flex:1; min-width:0;}
+  .row-info .name{font-weight:600; font-size:14px;}
+  .row-info .meta{font-size:12px; color:var(--ink-soft); margin-top:1px;}
+  .pill{
+    font-size:11px; font-weight:600; padding:4px 9px; border-radius:8px; white-space:nowrap;
+  }
+  .pill.good{background:var(--moss-soft); color:var(--moss);}
+  .pill.warn{background:var(--amber-soft); color:var(--amber);}
+  .pill.bad{background:var(--red-soft); color:var(--red);}
+
+  .fab{
+    position:absolute; right:20px; bottom:78px;
+    width:52px; height:52px; border-radius:50%;
+    background:var(--clay); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-size:22px; border:none; cursor:pointer;
+    box-shadow:0 10px 20px -8px rgba(181,96,63,.6);
+  }
+
+  /* ---- bottom nav ---- */
+  .navbar{
+    height:64px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:space-around;
+    border-top:1px solid var(--line); background:var(--card);
+  }
+  .navbar .nav-item{display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--ink-mute); font-size:10px; cursor:pointer;}
+  .navbar .nav-item i{font-size:19px;}
+  .navbar .nav-item.active{color:var(--moss);}
+
+  /* ---- profile screen ---- */
+  .profile-head{
+    display:flex; flex-direction:column; align-items:center;
+    padding:8px 20px 20px; text-align:center;
+  }
+  .profile-avatar{
+    width:72px; height:72px; border-radius:50%;
+    background:var(--moss-soft); color:var(--moss);
+    display:flex; align-items:center; justify-content:center;
+    font-size:22px; font-weight:600; font-family:'Space Grotesk',sans-serif;
+    margin-bottom:10px;
+  }
+  .profile-head .name{font-size:18px; font-family:'Space Grotesk',sans-serif; font-weight:600;}
+  .profile-head .meta{font-size:13px; color:var(--ink-soft); margin-top:3px;}
+
+  .stat-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:0 20px 18px;}
+  .stat-card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:14px;
+  }
+  .stat-card .label{font-size:12px; color:var(--ink-soft); margin-bottom:4px;}
+  .stat-card .value{font-size:22px; font-weight:600; font-family:'Space Grotesk',sans-serif;}
+
+  .section-title{
+    font-size:12px; text-transform:uppercase; letter-spacing:.08em;
+    color:var(--ink-mute); padding:0 20px; margin-bottom:8px; font-weight:600;
+  }
+  .info-card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    margin:0 20px 18px; padding:6px 14px;
+  }
+  .info-row{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:10px 0; font-size:13px;
+    border-bottom:1px solid var(--line);
+  }
+  .info-row:last-child{border-bottom:none;}
+  .info-row .k{color:var(--ink-soft); display:flex; align-items:center; gap:8px;}
+  .info-row .v{font-weight:500;}
+  .info-row .v.link{color:var(--moss);}
+
+  .grade-row{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:9px 0; font-size:13px; border-bottom:1px solid var(--line);
+  }
+  .grade-row:last-child{border-bottom:none;}
+  .grade-row .g{font-weight:600; font-family:'Space Grotesk',sans-serif;}
+
+  /* ---- form screen ---- */
+  .form-body{padding:4px 20px 24px; display:flex; flex-direction:column; gap:14px;}
+  .field label{display:block; font-size:12px; color:var(--ink-soft); margin-bottom:5px; font-weight:500;}
+  .field input, .field select{
+    width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--line);
+    background:var(--card); font-family:'Inter',sans-serif; font-size:13px; color:var(--ink);
+  }
+  .field input:focus, .field select:focus{outline:2px solid var(--moss); outline-offset:1px;}
+  .field-row{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .photo-upload{
+    align-self:center; width:64px; height:64px; border-radius:50%;
+    border:1.5px dashed #c7c2b6; display:flex; align-items:center; justify-content:center;
+    color:var(--ink-mute); font-size:20px; margin-bottom:2px; cursor:pointer;
+  }
+  .save-btn{
+    margin-top:6px; padding:12px; border-radius:10px; border:none;
+    background:var(--moss); color:#fff; font-weight:600; font-size:14px;
+    font-family:'Inter',sans-serif; cursor:pointer;
+  }
+  .save-btn:hover{background:#345040;}
+  .cancel-link{text-align:center; font-size:12px; color:var(--ink-mute); cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="heading">
+    <div class="eyebrow">Classroom</div>
+    <h1>Student management — mobile layouts</h1>
+    <p>Roster, profile, and enrollment screens. Tap a student to open their profile, tap + to enroll.</p>
+  </div>
+
+  <div class="frames">
+
+    <!-- SCREEN 1: LIST -->
+    <div class="frame-block" id="frame-list">
+      <div class="frame-label">Roster</div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="statusbar"></div>
+        <div class="screen">
+          <div class="topbar">
+            <h2>Students</h2>
+            <div class="icon-btn" aria-label="Add student" onclick="document.getElementById('frame-add').scrollIntoView({behavior:'smooth', block:'center'})"><i class="ti ti-plus"></i></div>
+          </div>
+          <div class="search">
+            <i class="ti ti-search"></i>
+            <input type="text" placeholder="Search by name or roll no">
+          </div>
+          <div class="chips">
+            <span class="chip active">All</span>
+            <span class="chip">Grade 8</span>
+            <span class="chip">Grade 9</span>
+            <span class="chip">Grade 10</span>
+          </div>
+          <div class="list">
+            <div class="row" onclick="document.getElementById('frame-profile').scrollIntoView({behavior:'smooth', block:'center'})">
+              <div class="avatar" style="background:var(--moss-soft); color:var(--moss);">AK</div>
+              <div class="row-info">
+                <div class="name">Aditi Kumar</div>
+                <div class="meta">Grade 9-A · Roll 12</div>
+              </div>
+              <span class="pill good">96% present</span>
+            </div>
+            <div class="row">
+              <div class="avatar" style="background:var(--clay-soft); color:var(--clay);">RS</div>
+              <div class="row-info">
+                <div class="name">Rahul Sharma</div>
+                <div class="meta">Grade 9-A · Roll 13</div>
+              </div>
+              <span class="pill warn">78% present</span>
+            </div>
+            <div class="row">
+              <div class="avatar" style="background:var(--amber-soft); color:var(--amber);">PM</div>
+              <div class="row-info">
+                <div class="name">Priya Menon</div>
+                <div class="meta">Grade 8-B · Roll 04</div>
+              </div>
+              <span class="pill good">91% present</span>
+            </div>
+            <div class="row">
+              <div class="avatar" style="background:var(--red-soft); color:var(--red);">SV</div>
+              <div class="row-info">
+                <div class="name">Sanjay Verma</div>
+                <div class="meta">Grade 10-C · Roll 27</div>
+              </div>
+              <span class="pill bad">64% present</span>
+            </div>
+            <div class="row">
+              <div class="avatar" style="background:var(--moss-soft); color:var(--moss);">NR</div>
+              <div class="row-info">
+                <div class="name">Neha Reddy</div>
+                <div class="meta">Grade 8-B · Roll 05</div>
+              </div>
+              <span class="pill good">88% present</span>
+            </div>
+          </div>
+          <button class="fab" aria-label="Add student" onclick="document.getElementById('frame-add').scrollIntoView({behavior:'smooth', block:'center'})"><i class="ti ti-plus"></i></button>
+        </div>
+        <div class="navbar">
+          <div class="nav-item" onclick="document.getElementById('frame-home').scrollIntoView({behavior:'smooth', block:'center'})"><i class="ti ti-home"></i>Home</div>
+          <div class="nav-item active"><i class="ti ti-users"></i>Students</div>
+          <div class="nav-item" onclick="document.getElementById('frame-attendance').scrollIntoView({behavior:'smooth', block:'center'})"><i class="ti ti-calendar"></i>Attendance</div>
+          <div class="nav-item" onclick="document.getElementById('frame-account').scrollIntoView({behavior:'smooth', block:'center'})"><i class="ti ti-user"></i>Profile</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN: STUDENT DETAIL (reached by tapping a row, not a nav tab) -->
+    <div class="frame-block" id="frame-profile">
+      <div class="frame-label">Student profile</div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="statusbar"></div>
+        <div class="screen">
+          <div class="topbar">
+            <div class="icon-btn ghost" aria-label="Back"><i class="ti ti-arrow-left"></i></div>
+            <div class="icon-btn" aria-label="Edit"><i class="ti ti-edit"></i></div>
+          </div>
+          <div class="profile-head">
+            <div class="profile-avatar">AK</div>
+            <div class="name">Aditi Kumar</div>
+            <div class="meta">Grade 9-A · Roll no. 12</div>
+          </div>
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="label">Attendance</div>
+              <div class="value">96%</div>
+            </div>
+            <div class="stat-card">
+              <div class="label">Avg. grade</div>
+              <div class="value">A-</div>
+            </div>
+          </div>
+          <div class="section-title">Contact</div>
+          <div class="info-card">
+            <div class="info-row"><span class="k"><i class="ti ti-phone"></i>Guardian</span><span class="v">+91 98765 43210</span></div>
+            <div class="info-row"><span class="k"><i class="ti ti-mail"></i>Email</span><span class="v link">aditi.k@school.edu</span></div>
+            <div class="info-row"><span class="k"><i class="ti ti-cake"></i>DOB</span><span class="v">14 Mar 2011</span></div>
+          </div>
+          <div class="section-title">Recent grades</div>
+          <div class="info-card">
+            <div class="grade-row"><span>Mathematics</span><span class="g">92</span></div>
+            <div class="grade-row"><span>Science</span><span class="g">88</span></div>
+            <div class="grade-row"><span>English</span><span class="g">85</span></div>
+          </div>
+        </div>
+        <div class="navbar">
+          <div class="nav-item" onclick="document.getElementById('frame-home').scrollIntoView({behavior:'smooth', block:'center'})"><i class="ti ti-home"></i>Home</div>
+          <div class="nav-item active"><i class="ti ti-users"></i>Students</div>
+          <div class="nav-item" onclick="document.getElementById('frame-attendance').scrollIntoView({behavior:'smooth', block:'center'})"><i class="ti ti-calendar"></i>Attendance</div>
+          <div class="nav-item" onclick="document.getElementById('frame-account').scrollIntoView({behavior:'smooth', block:'center'})"><i class="ti ti-user"></i>Profile</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN: ADD/EDIT FORM (reached via the + action, not a nav tab) -->
+    <div class="frame-block" id="frame-add">
+      <div class="frame-label">Enroll student</div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="statusbar"></div>
+        <div class="screen">
+          <div class="topbar">
+            <div class="icon-btn ghost" aria-label="Close"><i class="ti ti-x"></i></div>
+            <h2 style="font-size:16px;">Add student</h2>
+            <span style="width:34px;"></span>
+          </div>
+          <div class="form-body">
+            <div class="photo-upload" aria-label="Add photo"><i class="ti ti-camera"></i></div>
+            <div class="field">
+              <label>Full name</label>
+              <input type="text" placeholder="e.g. Neha Reddy">
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Grade</label>
+                <select>
+                  <option>Grade 8</option>
+                  <option>Grade 9</option>
+                  <option>Grade 10</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Section</label>
+                <select>
+                  <option>A</option>
+                  <option>B</option>
+                  <option>C</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label>Roll number</label>
+              <input type="text" placeholder="e.g. 21">
+            </div>
+            <div class="field">
+              <label>Date of birth</label>
+              <input type="date">
+            </div>
+            <div class="field">
+              <label>Guardian phone</label>
+              <input type="tel" placeholder="+91 90000 00000">
+            </div>
+            <div class="field">
+              <label>Email</label>
+              <input type="email" placeholder="name@school.edu">
+            </div>
+            <button class="save-btn">Save student</button>
+            <div class="cancel-link">Cancel</div>
+          </div>
+        </div>
+        <div class="navbar">
+          <div class="nav-item" onclick="document.getElementById('frame-home').scrollIntoView({behavior:'smooth', block:'center'})"><i class="ti ti-home"></i>Home</div>
+          <div class="nav-item" onclick="document.getElementById('frame-list').scrollIntoView({behavior:'smooth', block:'center'})"><i class="ti ti-users"></i>Students</div>
+          <div class="nav-item" onclick="document.getElementById('frame-attendance').scrollIntoView({behavior:'smooth', block:'center'})"><i class="ti ti-calendar"></i>Attendance</div>
+          <div class="nav-item" onclick="document.getElementById('frame-account').scrollIntoView({behavior:'smooth', block:'center'})"><i class="ti ti-user"></i>Profile</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN: HOME DASHBOARD -->
+    <div class="frame-block" id="frame-home">
+      <div class="frame-label">Home</div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="statusbar"></div>
+        <div class="screen">
+          <div class="topbar">
+            <div>
+              <h2 style="font-size:18px;">Good morning, Ms. Rao</h2>
+              <p style="font-size:12px; color:var(--ink-soft); margin:3px 0 0;">Wednesday, 29 July</p>
+            </div>
+            <div class="icon-btn ghost" aria-label="Notifications"><i class="ti ti-bell"></i></div>
+          </div>
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="label">Total students</div>
+              <div class="value">128</div>
+            </div>
+            <div class="stat-card">
+              <div class="label">Present today</div>
+              <div class="value">119</div>
+            </div>
+          </div>
+          <div class="section-title">Quick actions</div>
+          <div class="info-card" style="padding:4px 8px;">
+            <div class="row" onclick="document.getElementById('frame-attendance').scrollIntoView({behavior:'smooth', block:'center'})">
+              <div class="avatar" style="background:var(--moss-soft); color:var(--moss);"><i class="ti ti-calendar-event"></i></div>
+              <div class="row-info"><div class="name">Mark today's attendance</div><div class="meta">Grade 9-A · not yet taken</div></div>
+              <i class="ti ti-chevron-right" style="color:var(--ink-mute);"></i>
+            </div>
+            <div class="row" onclick="document.getElementById('frame-add').scrollIntoView({behavior:'smooth', block:'center'})">
+              <div class="avatar" style="background:var(--clay-soft); color:var(--clay);"><i class="ti ti-user-plus"></i></div>
+              <div class="row-info"><div class="name">Enroll a new student</div><div class="meta">Add profile and contact info</div></div>
+              <i class="ti ti-chevron-right" style="color:var(--ink-mute);"></i>
+            </div>
+          </div>
+          <div class="section-title">Needs attention</div>
+          <div class="info-card">
+            <div class="info-row"><span class="k"><i class="ti ti-alert-triangle" style="color:var(--red);"></i>Sanjay Verma</span><span class="v" style="color:var(--red);">64% attendance</span></div>
+            <div class="info-row"><span class="k"><i class="ti ti-alert-triangle" style="color:var(--amber);"></i>Rahul Sharma</span><span class="v" style="color:var(--amber);">78% attendance</span></div>
+          </div>
+        </div>
+        <div class="navbar">
+          <div class="nav-item active"><i class="ti ti-home"></i>Home</div>
+          <div class="nav-item" onclick="document.getElementById('frame-list').scrollIntoView({behavior:'smooth', block:'center'})"><i class="ti ti-users"></i>Students</div>
+          <div class="nav-item" onclick="document.getElementById('frame-attendance').scrollIntoView({behavior:'smooth', block:'center'})"><i class="ti ti-calendar"></i>Attendance</div>
+          <div class="nav-item" onclick="document.getElementById('frame-account').scrollIntoView({behavior:'smooth', block:'center'})"><i class="ti ti-user"></i>Profile</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN: ATTENDANCE -->
+    <div class="frame-block" id="frame-attendance">
+      <div class="frame-label">Attendance</div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="statusbar"></div>
+        <div class="screen">
+          <div class="topbar">
+            <h2>Attendance</h2>
+            <div class="icon-btn ghost" aria-label="Change date"><i class="ti ti-calendar"></i></div>
+          </div>
+          <div class="chips">
+            <span class="chip active">Grade 9-A</span>
+            <span class="chip">Grade 9-B</span>
+            <span class="chip">Grade 10-C</span>
+          </div>
+          <p style="font-size:12px; color:var(--ink-soft); margin:0 20px 10px;">29 Jul 2026 · 24 of 26 marked</p>
+          <div class="list">
+            <div class="row">
+              <div class="avatar" style="background:var(--moss-soft); color:var(--moss);">AK</div>
+              <div class="row-info"><div class="name">Aditi Kumar</div><div class="meta">Roll 12</div></div>
+              <div class="icon-btn" style="background:var(--moss-soft); border-color:var(--moss); color:var(--moss);" aria-label="Present"><i class="ti ti-check"></i></div>
+            </div>
+            <div class="row">
+              <div class="avatar" style="background:var(--clay-soft); color:var(--clay);">RS</div>
+              <div class="row-info"><div class="name">Rahul Sharma</div><div class="meta">Roll 13</div></div>
+              <div class="icon-btn" style="background:var(--red-soft); border-color:var(--red); color:var(--red);" aria-label="Absent"><i class="ti ti-x"></i></div>
+            </div>
+            <div class="row">
+              <div class="avatar" style="background:var(--amber-soft); color:var(--amber);">PM</div>
+              <div class="row-info"><div class="name">Priya Menon</div><div class="meta">Roll 04</div></div>
+              <div class="icon-btn" style="background:var(--moss-soft); border-color:var(--moss); color:var(--moss);" aria-label="Present"><i class="ti ti-check"></i></div>
+            </div>
+            <div class="row">
+              <div class="avatar" style="background:var(--red-soft); color:var(--red);">SV</div>
+              <div class="row-info"><div class="name">Sanjay Verma</div><div class="meta">Roll 27</div></div>
+              <div class="icon-btn" aria-label="Not marked"><i class="ti ti-minus"></i></div>
+            </div>
+          </div>
+          <div style="padding:6px 20px 18px;">
+            <button class="save-btn" style="width:100%;">Save attendance</button>
+          </div>
+        </div>
+        <div class="navbar">
+          <div class="nav-item" onclick="document.getElementById('frame-home').scrollIntoView({behavior:'smooth', block:'center'})"><i class="ti ti-home"></i>Home</div>
+          <div class="nav-item" onclick="document.getElementById('frame-list').scrollIntoView({behavior:'smooth', block:'center'})"><i class="ti ti-users"></i>Students</div>
+          <div class="nav-item active"><i class="ti ti-calendar"></i>Attendance</div>
+          <div class="nav-item" onclick="document.getElementById('frame-account').scrollIntoView({behavior:'smooth', block:'center'})"><i class="ti ti-user"></i>Profile</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN: ACCOUNT PROFILE (the teacher/admin using the app) -->
+    <div class="frame-block" id="frame-account">
+      <div class="frame-label">Account</div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="statusbar"></div>
+        <div class="screen">
+          <div class="topbar">
+            <h2>Profile</h2>
+            <div class="icon-btn ghost" aria-label="Settings"><i class="ti ti-settings"></i></div>
+          </div>
+          <div class="profile-head">
+            <div class="profile-avatar" style="background:var(--clay-soft); color:var(--clay);">SR</div>
+            <div class="name">Sunita Rao</div>
+            <div class="meta">Class teacher · Grade 9-A</div>
+          </div>
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="label">Classes</div>
+              <div class="value">3</div>
+            </div>
+            <div class="stat-card">
+              <div class="label">Students</div>
+              <div class="value">128</div>
+            </div>
+          </div>
+          <div class="section-title">Account</div>
+          <div class="info-card" style="padding:4px 8px;">
+            <div class="row"><div class="avatar" style="background:var(--surface, #eee); color:var(--ink-soft); background:#eee;"><i class="ti ti-user"></i></div><div class="row-info"><div class="name">Personal details</div></div><i class="ti ti-chevron-right" style="color:var(--ink-mute);"></i></div>
+            <div class="row"><div class="avatar" style="background:#eee; color:var(--ink-soft);"><i class="ti ti-bell"></i></div><div class="row-info"><div class="name">Notifications</div></div><i class="ti ti-chevron-right" style="color:var(--ink-mute);"></i></div>
+            <div class="row"><div class="avatar" style="background:#eee; color:var(--ink-soft);"><i class="ti ti-lock"></i></div><div class="row-info"><div class="name">Privacy and security</div></div><i class="ti ti-chevron-right" style="color:var(--ink-mute);"></i></div>
+            <div class="row"><div class="avatar" style="background:#eee; color:var(--ink-soft);"><i class="ti ti-logout"></i></div><div class="row-info"><div class="name">Log out</div></div></div>
+          </div>
+        </div>
+        <div class="navbar">
+          <div class="nav-item" onclick="document.getElementById('frame-home').scrollIntoView({behavior:'smooth', block:'center'})"><i class="ti ti-home"></i>Home</div>
+          <div class="nav-item" onclick="document.getElementById('frame-list').scrollIntoView({behavior:'smooth', block:'center'})"><i class="ti ti-users"></i>Students</div>
+          <div class="nav-item" onclick="document.getElementById('frame-attendance').scrollIntoView({behavior:'smooth', block:'center'})"><i class="ti ti-calendar"></i>Attendance</div>
+          <div class="nav-item active"><i class="ti ti-user"></i>Profile</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
