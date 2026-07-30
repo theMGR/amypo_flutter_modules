@@ -149,6 +149,7 @@
 
 <h1 class="page-title">Dart &amp; Flutter Basics — Quick Reference</h1>
 <p class="subtitle">Core syntax, control flow, OOP, async, and the most common Flutter widgets with minimal examples.</p>
+<p class="subtitle">A companion runnable file, <code class="inline">common_widgets_demo.dart</code>, demonstrates all the widgets below together in a single working app (Gallery + Tabs/Pages screens).</p>
 
 <div class="columns">
 
@@ -942,6 +943,119 @@ void dispose() {
   animController.dispose();
   super.dispose();
 }</pre>
+</div>
+
+<div class="section-divider">Run &amp; Build Commands</div>
+
+<div class="card">
+  <h2>Run the App <span class="tag">CLI</span></h2>
+  <p class="def">Launches the app in debug mode on a connected device, emulator, or simulator.</p>
+  <pre>flutter run
+
+# choose a specific device
+flutter devices
+flutter run -d chrome
+flutter run -d emulator-5554
+
+# hot reload: press "r" in terminal while running
+# hot restart: press "R"
+# quit: press "q"</pre>
+</div>
+
+<div class="card">
+  <h2>Build APK (Android) <span class="tag">CLI</span></h2>
+  <p class="def">Produces a standalone Android install file (.apk), useful for direct install/testing.</p>
+  <pre>flutter build apk
+
+# smaller, split per CPU architecture (recommended for size)
+flutter build apk --split-per-abi
+
+# release mode, specific target
+flutter build apk --release
+
+# output location:
+# build/app/outputs/flutter-apk/app-release.apk</pre>
+</div>
+
+<div class="card">
+  <h2>Build App Bundle / AAB <span class="tag">CLI</span></h2>
+  <p class="def">Produces the .aab format required for publishing to the Google Play Store.</p>
+  <pre>flutter build appbundle
+
+# release build (default)
+flutter build appbundle --release
+
+# output location:
+# build/app/outputs/bundle/release/app-release.aab</pre>
+  <p class="note">Play Store requires AAB, not APK, for new app submissions.</p>
+</div>
+
+<div class="card">
+  <h2>Build for Web <span class="tag">CLI</span></h2>
+  <p class="def">Compiles the app into HTML/JS/CSS that can be hosted on any web server.</p>
+  <pre>flutter build web
+
+# release build with a specific renderer
+flutter build web --release --web-renderer canvaskit
+
+# output location:
+# build/web/  (deploy this folder to hosting)
+
+# quick local preview
+flutter run -d chrome</pre>
+</div>
+
+<div class="card">
+  <h2>Build for iOS <span class="tag">CLI</span></h2>
+  <p class="def">Compiles the app for iOS devices; requires a Mac with Xcode installed.</p>
+  <pre>flutter build ios
+
+# build an .ipa for distribution (App Store / TestFlight)
+flutter build ipa
+
+# output location:
+# build/ios/iphoneos/
+# build/ios/ipa/ (for .ipa)</pre>
+  <p class="note">After building, open the iOS project in Xcode to archive and upload, or use <code class="inline">flutter build ipa</code> directly.</p>
+</div>
+
+<div class="card">
+  <h2>Build for Desktop <span class="tag">CLI</span></h2>
+  <p class="def">Compiles the app into a native desktop application for Windows, macOS, or Linux.</p>
+  <pre>flutter build windows
+flutter build macos
+flutter build linux
+
+# enable desktop support if not already
+flutter config --enable-windows-desktop
+flutter config --enable-macos-desktop
+flutter config --enable-linux-desktop</pre>
+</div>
+
+<div class="card">
+  <h2>Useful Project Commands <span class="tag">CLI</span></h2>
+  <p class="def">Everyday commands for setting up, cleaning, and diagnosing a Flutter project.</p>
+  <pre>flutter create my_app        # start a new project
+flutter pub get              # install dependencies
+flutter pub upgrade          # update dependencies
+flutter clean                # clear build cache
+flutter doctor                # check setup/environment issues
+flutter analyze              # static analysis / lint
+flutter test                 # run unit/widget tests
+flutter --version            # check installed Flutter version</pre>
+</div>
+
+<div class="card">
+  <h2>Build Modes <span class="tag">CLI</span></h2>
+  <p class="def">Flutter builds run in one of three modes depending on the flag used.</p>
+  <ul>
+    <li><code class="inline">--debug</code> (default with <code class="inline">flutter run</code>) — hot reload, assertions on, slower, for development.</li>
+    <li><code class="inline">--profile</code> — near-release performance, keeps some tooling for profiling.</li>
+    <li><code class="inline">--release</code> — optimized, smaller, no debug banner, for shipping to users.</li>
+  </ul>
+  <pre>flutter run --release
+flutter build apk --release
+flutter build web --release</pre>
 </div>
 
 </div>
