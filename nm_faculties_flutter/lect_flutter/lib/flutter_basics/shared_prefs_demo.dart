@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+void main() {
+  runApp(MaterialApp(home: const SharedPrefsDemo()));
+}
+
 /// A single-file simple example demonstrating how to use SharedPreferences in Flutter.
 ///
 /// Features demonstrated:

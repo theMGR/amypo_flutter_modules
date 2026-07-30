@@ -1,0 +1,6 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="http demo with dto" type="FlutterRunConfigurationType" factoryName="Flutter">
+    <option name="filePath" value="$PROJECT_DIR$/lib/flutter_basics/api_demo_with_dto.dart" />
+    <method v="2" />
+  </configuration>
+</component>
