@@ -1,3 +1,5 @@
+import 'main_dart_basics.dart';
+
 void main() async {
   print('Start');
 
@@ -23,6 +25,14 @@ Future<String> fetchData() async {
   // simulate delay, like a network call
   await Future.delayed(Duration(seconds: 2));
   return 'Data loaded!';
+}
+
+class Student2 {
+  void something() {
+    var s = Student(1);
+    // check to access private fields
+    //s._
+  }
 }
 
 

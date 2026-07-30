@@ -1,3 +1,24 @@
+class Student {
+  final int roll_number;
+  double? _marks;
+  Student(this.roll_number);
+
+  @override
+  String toString() {
+    return 'Student: roll_number: $roll_number';
+  }
+
+  void isFactorialCheck() {
+    isPalindrome("dad");
+  }
+
+  void _isFactorialCheck() {
+    isPalindrome("dad");
+  }
+}
+
+
+
 void main() {
   // int - whole numbers
   int age = 25;
@@ -36,11 +57,75 @@ void main() {
   print('Person name from map: ${person["name"]}');
 
 
+  // var final const dynamic
+  final double x_pi = 3.14;
+  // x_pi = 3.20;
+  const double y_pi = 3.14;
+  // y_pi = 3.20;
+  final x__pi = 3.14;
+  const yy__pi = 3.14;
+  var x_var = 3;
+  // x_var = 3.14;
+  dynamic x_dynamic = 3.14;
+  x_dynamic = "Hi";
+  String a_name = "manivannang";
+  late String b_name;
+  b_name = "mg";
+  int a_number = 0;
+  int? b_number;
+
+  var a_stundent = Student(12);
+  Student? b_student;
+
+  if (x_dynamic is double) {
+    double x = x_dynamic as double;
+  } else if (x_dynamic is String) {
+    String x = x_dynamic as String;
+  }
+
+  if(x_dynamic != null && x_dynamic is double &&  (x_dynamic as double) >= 0) {
+  //
+  }
+  if(x_dynamic != null && x_dynamic is double && x_dynamic >= 0) {
+  //
+  }
+
+  if(a_number != null) {
+    //
+  }
+  if(b_number != null) {
+    //
+  }
+
+  if(b_number == null) {
+    b_number = -1;
+    if(b_number != null) {
+
+    }
+  }
+
+  if(b_student == null) {
+    b_student = Student(13);
+    b_student.isFactorialCheck();
+    b_student._isFactorialCheck();
+  }
+
+
+  dynamic c_dynamic = "example_exception";
+  // print(c_dynamic/0);
+  try {
+    print(c_dynamic/0);
+  } catch (e) {
+    print('Exception occurs: $e');
+  }
+
+
   ///// 1. Check Palindrome
   print('\nReal time examples');
   print('1. Check Palindrome');
   print(isPalindrome("madam")); // true
   print(isPalindrome("hello")); // false
+  print(isPalindromeNullSafety(null));
   print('\n');
 
   ///// 2. Factorial
@@ -97,9 +182,29 @@ void main() {
 
 }
 
+void checkStudent(Student? student) {
+  if(student == null) {
+    student = Student(0);
+    print(student);
+  }
+}
+
 ///// 1. Check Palindrome
 bool isPalindrome(String s) {
   String reversed = s.split('').reversed.join('');
+  return s == reversed;
+}
+
+bool isPalindromeNullSafety(String? s) {
+  // String reversed_ = s!.split('').reversed.join(''); //   Null check operator used on a null value
+  // String reversed = s?.split('').reversed.join('');
+  // String? reversed__ = s?.split('').reversed.join('');
+  // String? reversed___ = s.split('').reversed.join('');
+
+  String reversed = '';
+  if (s != null) {
+    reversed = s;
+  }
   return s == reversed;
 }
 
