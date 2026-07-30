@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dart & Flutter Basics — Reference Notes</title>
+<style>
+  :root{
+    --bg:#0f1115;
+    --panel:#171a21;
+    --panel-border:#262b35;
+    --text:#e6e8ec;
+    --muted:#8b93a1;
+    --accent:#4fc3a1;
+    --accent2:#5b9cf6;
+    --code-bg:#0b0d12;
+    --code-text:#c9d6e3;
+    --kw:#4fc3a1;
+    --str:#e0a458;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    padding:24px;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Segoe UI', Roboto, Arial, sans-serif;
+    font-size:13px;
+    line-height:1.45;
+  }
+  h1.page-title{
+    font-size:22px;
+    margin:0 0 4px 0;
+    color:var(--text);
+    letter-spacing:.3px;
+  }
+  p.subtitle{
+    margin:0 0 20px 0;
+    color:var(--muted);
+    font-size:12.5px;
+  }
+  .columns{
+    column-count:4;
+    column-gap:16px;
+  }
+  .card{
+    background:var(--panel);
+    border:1px solid var(--panel-border);
+    border-radius:8px;
+    padding:12px 14px;
+    margin-bottom:16px;
+    break-inside:avoid;
+    -webkit-column-break-inside:avoid;
+  }
+  .card h2{
+    font-size:13.5px;
+    margin:0 0 8px 0;
+    color:var(--accent);
+    border-bottom:1px solid var(--panel-border);
+    padding-bottom:6px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .card h2 .tag{
+    font-size:9.5px;
+    background:var(--accent2);
+    color:#0b0d12;
+    padding:1px 6px;
+    border-radius:10px;
+    font-weight:700;
+    letter-spacing:.3px;
+  }
+  .card h3{
+    font-size:11.5px;
+    margin:10px 0 4px 0;
+    color:var(--accent2);
+  }
+  p.def{
+    font-size:11.5px;
+    color:var(--muted);
+    margin:0 0 8px 0;
+    font-style:italic;
+  }
+  .card p{
+    margin:4px 0;
+    color:var(--text);
+  }
+  .card ul{
+    margin:4px 0;
+    padding-left:16px;
+  }
+  .card li{
+    margin:2px 0;
+  }
+  code.inline{
+    background:var(--code-bg);
+    color:var(--str);
+    padding:1px 5px;
+    border-radius:4px;
+    font-family:'Consolas','Courier New',monospace;
+    font-size:11.5px;
+  }
+  pre{
+    background:var(--code-bg);
+    color:var(--code-text);
+    padding:8px 10px;
+    border-radius:6px;
+    overflow-x:auto;
+    margin:6px 0;
+    font-family:'Consolas','Courier New',monospace;
+    font-size:11px;
+    line-height:1.4;
+    border:1px solid var(--panel-border);
+  }
+  .note{
+    font-size:11px;
+    color:var(--muted);
+    margin-top:6px;
+    border-left:2px solid var(--accent);
+    padding-left:8px;
+  }
+  .section-divider{
+    column-span:all;
+    font-size:15px;
+    color:var(--accent2);
+    margin:18px 0 10px 0;
+    padding-top:8px;
+    border-top:1px solid var(--panel-border);
+    letter-spacing:.4px;
+  }
+  .section-divider:first-of-type{
+    border-top:none;
+    margin-top:0;
+  }
+  @media print{
+    body{background:#fff;color:#000;padding:10px;}
+    .card{background:#f7f7f7;border:1px solid #ccc;}
+    pre{background:#eee;color:#111;border:1px solid #ccc;}
+    code.inline{background:#eee;color:#a05a00;}
+    .card h2{color:#1a7a5e;}
+    .card h3{color:#1a5ea0;}
+    .section-divider{color:#1a5ea0;}
+    .note{color:#555;}
+    p.def{color:#444;}
+  }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">Dart &amp; Flutter Basics — Quick Reference</h1>
+<p class="subtitle">Core syntax, control flow, OOP, async, and the most common Flutter widgets with minimal examples.</p>
+
+<div class="columns">
+
+<div class="section-divider">Dart Language Basics</div>
+
+<div class="card">
+  <h2>Variables &amp; Types <span class="tag">DART</span></h2>
+  <p class="def">A variable is a named box that holds a value. The type tells Dart what kind of value it can hold.</p>
+  <pre>int age = 25;
+double height = 5.9;
+String name = "John";
+bool isOn = true;
+var x = 10;      // type inferred
+dynamic y = 10;  // type can change
+final z = 5;     // set once
+const pi = 3.14; // compile-time constant</pre>
+  <p class="note">Use <code class="inline">final</code> for runtime constants, <code class="inline">const</code> for compile-time constants.</p>
+</div>
+
+<div class="card">
+  <h2>Collections <span class="tag">DART</span></h2>
+  <p class="def">Collections group multiple values together. List = ordered items, Set = unique items, Map = key-value pairs.</p>
+  <pre>List&lt;int&gt; nums = [1, 2, 3];
+Set&lt;String&gt; unique = {"a", "b"};
+Map&lt;String, int&gt; ages = {
+  "Tom": 20,
+  "Sam": 25,
+};
+
+nums.add(4);
+ages["Tom"];        // 20
+nums.where((n) =&gt; n &gt; 1);
+nums.map((n) =&gt; n * 2).toList();</pre>
+</div>
+
+<div class="card">
+  <h2>Control Flow <span class="tag">DART</span></h2>
+  <p class="def">Control flow decides which code runs, and how many times, based on conditions.</p>
+  <pre>if (age &gt; 18) {
+  print("Adult");
+} else if (age == 18) {
+  print("Just turned");
+} else {
+  print("Minor");
+}
+
+for (int i = 0; i &lt; 5; i++) { }
+for (var item in nums) { }
+while (age &lt; 30) { age++; }
+
+switch (age) {
+  case 18:
+    print("18");
+    break;
+  default:
+    print("other");
+}</pre>
+</div>
+
+<div class="card">
+  <h2>Functions <span class="tag">DART</span></h2>
+  <p class="def">A function is a reusable block of code that performs a task and can accept inputs and return a value.</p>
+  <pre>int add(int a, int b) {
+  return a + b;
+}
+
+int addArrow(int a, int b) =&gt; a + b;
+
+// optional named params
+void greet({String name = "Guest"}) {
+  print("Hi $name");
+}
+greet(name: "Sam");
+
+// optional positional params
+void log([String? msg]) {
+  print(msg ?? "no message");
+}</pre>
+</div>
+
+<div class="card">
+  <h2>Null Safety <span class="tag">DART</span></h2>
+  <p class="def">Null safety means a variable can only be empty (null) if you explicitly allow it, preventing crashes.</p>
+  <pre>String? nickname;         // nullable
+String name = nickname ?? "Anon"; // default if null
+nickname?.length;         // safe call
+int len = nickname!.length; // force unwrap (risky)</pre>
+  <p class="note">Dart's sound null safety prevents null reference errors at compile time.</p>
+</div>
+
+<div class="card">
+  <h2>Classes &amp; OOP <span class="tag">DART</span></h2>
+  <p class="def">A class is a blueprint for creating objects that bundle data (fields) and behavior (methods) together.</p>
+  <pre>class Person {
+  String name;
+  int age;
+
+  Person(this.name, this.age);
+
+  void greet() =&gt; print("Hi, I'm $name");
+}
+
+class Student extends Person {
+  String school;
+  Student(String name, int age, this.school)
+      : super(name, age);
+}
+
+var s = Student("Sam", 20, "MIT");
+s.greet();</pre>
+</div>
+
+<div class="card">
+  <h2>Async Programming <span class="tag">DART</span></h2>
+  <p class="def">Async code lets slow tasks (like network calls) run in the background without freezing the app.</p>
+  <pre>Future&lt;String&gt; fetchData() async {
+  await Future.delayed(Duration(seconds: 2));
+  return "Data loaded";
+}
+
+void main() async {
+  print("Start");
+  String result = await fetchData();
+  print(result);
+}</pre>
+  <p class="note"><code class="inline">async</code> marks a function as asynchronous; <code class="inline">await</code> pauses until the Future resolves.</p>
+</div>
+
+<div class="card">
+  <h2>Exception Handling <span class="tag">DART</span></h2>
+  <p class="def">Exception handling catches errors at runtime so the app can respond gracefully instead of crashing.</p>
+  <pre>try {
+  int result = 10 ~/ 0;
+} catch (e) {
+  print("Error: $e");
+} finally {
+  print("Always runs");
+}
+
+throw Exception("Custom error");</pre>
+</div>
+
+<div class="section-divider">Flutter Basics</div>
+
+<div class="card">
+  <h2>App Entry Point <span class="tag">FLUTTER</span></h2>
+  <p class="def">Every Flutter app starts by running the main() function, which launches the root widget on screen.</p>
+  <pre>import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Demo',
+      home: HomeScreen(),
+    );
+  }
+}</pre>
+</div>
+
+<div class="card">
+  <h2>Stateless vs Stateful <span class="tag">FLUTTER</span></h2>
+  <p class="def">Stateless widgets never change once built. Stateful widgets can redraw themselves when their data changes.</p>
+  <pre>// No internal state, immutable
+class Greeting extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Text("Hello");
+  }
+}
+
+// Has mutable state
+class Counter extends StatefulWidget {
+  @override
+  State&lt;Counter&gt; createState() =&gt; _CounterState();
+}
+
+class _CounterState extends State&lt;Counter&gt; {
+  int count = 0;
+
+  void increment() {
+    setState(() =&gt; count++);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Text("$count");
+  }
+}</pre>
+</div>
+
+<div class="card">
+  <h2>Widget Tree Concept <span class="tag">FLUTTER</span></h2>
+  <p class="def">Everything on screen in Flutter is a widget — text, layout, padding, buttons all nest together to form a tree.</p>
+  <p>The <code class="inline">build()</code> method describes what the UI looks like, and re-runs whenever the widget's state changes.</p>
+</div>
+
+<div class="section-divider">Common Widgets</div>
+
+<div class="card">
+  <h2>Text &amp; Icon</h2>
+  <p class="def">Text displays a string on screen; Icon displays a small built-in graphic symbol.</p>
+  <pre>Text(
+  "Hello Flutter",
+  style: TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.bold,
+    color: Colors.blue,
+  ),
+)
+
+Icon(Icons.favorite, color: Colors.red, size: 30)</pre>
+</div>
+
+<div class="card">
+  <h2>Container</h2>
+  <p class="def">A box widget used to hold, size, pad, and decorate another widget (like a div in HTML).</p>
+  <pre>Container(
+  width: 100,
+  height: 100,
+  padding: EdgeInsets.all(8),
+  margin: EdgeInsets.symmetric(horizontal: 12),
+  decoration: BoxDecoration(
+    color: Colors.teal,
+    borderRadius: BorderRadius.circular(12),
+  ),
+  child: Text("Box"),
+)</pre>
+</div>
+
+<div class="card">
+  <h2>Row &amp; Column</h2>
+  <p class="def">Row arranges widgets side by side horizontally; Column stacks widgets vertically.</p>
+  <pre>Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
+    Icon(Icons.star),
+    Icon(Icons.star),
+  ],
+)
+
+Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    Text("Line 1"),
+    Text("Line 2"),
+  ],
+)</pre>
+</div>
+
+<div class="card">
+  <h2>Stack</h2>
+  <p class="def">Stack layers widgets on top of one another, like sheets of paper piled together.</p>
+  <pre>Stack(
+  alignment: Alignment.center,
+  children: [
+    Container(color: Colors.grey, width: 100, height: 100),
+    Positioned(
+      bottom: 8,
+      right: 8,
+      child: Icon(Icons.edit),
+    ),
+  ],
+)</pre>
+  <p class="note">Overlays widgets on top of each other, useful for badges or floating labels.</p>
+</div>
+
+<div class="card">
+  <h2>ListView</h2>
+  <p class="def">A scrollable widget that displays a list of items, one after another.</p>
+  <pre>// Fixed short list
+ListView(
+  children: [Text("A"), Text("B")],
+)
+
+// Large/dynamic list (lazy loaded)
+ListView.builder(
+  itemCount: items.length,
+  itemBuilder: (context, index) {
+    return ListTile(title: Text(items[index]));
+  },
+)
+
+// List with dividers between items
+ListView.separated(
+  itemCount: items.length,
+  separatorBuilder: (context, index) =&gt; Divider(),
+  itemBuilder: (context, index) =&gt; Text(items[index]),
+)
+
+// Horizontal scrolling list
+ListView(
+  scrollDirection: Axis.horizontal,
+  children: [Container(width: 80), Container(width: 80)],
+)</pre>
+  <p class="note"><code class="inline">.builder</code> only renders items on screen (lazy) — best for long lists.</p>
+</div>
+
+<div class="card">
+  <h2>DropdownButton</h2>
+  <p class="def">A tappable field that shows a menu of options and lets the user pick one.</p>
+  <pre>String? selected = "One";
+
+DropdownButton&lt;String&gt;(
+  value: selected,
+  items: ["One", "Two", "Three"]
+      .map((v) =&gt; DropdownMenuItem(
+            value: v,
+            child: Text(v),
+          ))
+      .toList(),
+  onChanged: (value) {
+    setState(() =&gt; selected = value);
+  },
+)</pre>
+  <p class="note">Wrap in <code class="inline">DropdownButtonFormField</code> for a labeled, form-style dropdown.</p>
+</div>
+
+<div class="card">
+  <h2>Radio</h2>
+  <p class="def">A round button used to pick exactly one option from a group.</p>
+  <pre>int groupValue = 1;
+
+Radio&lt;int&gt;(
+  value: 1,
+  groupValue: groupValue,
+  onChanged: (val) =&gt; setState(() =&gt; groupValue = val!),
+)</pre>
+</div>
+
+<div class="card">
+  <h2>Slider</h2>
+  <p class="def">A draggable bar for choosing a numeric value within a range.</p>
+  <pre>double value = 20;
+
+Slider(
+  value: value,
+  min: 0,
+  max: 100,
+  divisions: 5,
+  label: value.round().toString(),
+  onChanged: (val) =&gt; setState(() =&gt; value = val),
+)</pre>
+</div>
+
+<div class="card">
+  <h2>Form &amp; TextFormField</h2>
+  <p class="def">Form groups input fields together so they can all be validated and saved at once.</p>
+  <pre>final formKey = GlobalKey&lt;FormState&gt;();
+
+Form(
+  key: formKey,
+  child: TextFormField(
+    decoration: InputDecoration(labelText: "Email"),
+    validator: (value) {
+      if (value == null || value.isEmpty) return "Required";
+      return null;
+    },
+  ),
+)
+
+// check validity
+if (formKey.currentState!.validate()) { }</pre>
+</div>
+
+<div class="card">
+  <h2>GestureDetector &amp; InkWell</h2>
+  <p class="def">Both detect taps, drags, and other touches on a widget. InkWell also shows a ripple effect.</p>
+  <pre>GestureDetector(
+  onTap: () =&gt; print("Tapped"),
+  child: Text("Tap me"),
+)
+
+InkWell(
+  onTap: () =&gt; print("Tapped with ripple"),
+  child: Padding(
+    padding: EdgeInsets.all(8),
+    child: Text("Tap me"),
+  ),
+)</pre>
+</div>
+
+<div class="card">
+  <h2>Expanded &amp; Flexible</h2>
+  <p class="def">Used inside Row/Column to control how much space a child takes up relative to others.</p>
+  <pre>Row(
+  children: [
+    Expanded(
+      flex: 2,
+      child: Container(color: Colors.red),
+    ),
+    Expanded(
+      flex: 1,
+      child: Container(color: Colors.blue),
+    ),
+  ],
+)</pre>
+  <p class="note">Expanded forces the child to fill the space; Flexible lets it shrink to fit.</p>
+</div>
+
+<div class="card">
+  <h2>Wrap</h2>
+  <p class="def">Lays out children in a row, automatically wrapping to a new line when space runs out.</p>
+  <pre>Wrap(
+  spacing: 8,
+  runSpacing: 8,
+  children: [
+    Chip(label: Text("Dart")),
+    Chip(label: Text("Flutter")),
+    Chip(label: Text("Mobile")),
+  ],
+)</pre>
+</div>
+
+<div class="card">
+  <h2>Chip</h2>
+  <p class="def">A small rounded label, often used for tags, filters, or selections.</p>
+  <pre>Chip(
+  label: Text("Flutter"),
+  avatar: Icon(Icons.tag),
+  onDeleted: () =&gt; print("Removed"),
+)</pre>
+</div>
+
+<div class="card">
+  <h2>SingleChildScrollView</h2>
+  <p class="def">Makes a single widget (like a tall Column) scrollable when it overflows the screen.</p>
+  <pre>SingleChildScrollView(
+  child: Column(
+    children: [ /* many widgets */ ],
+  ),
+)</pre>
+</div>
+
+<div class="card">
+  <h2>SafeArea</h2>
+  <p class="def">Keeps content away from notches, status bars, and system UI cutouts.</p>
+  <pre>SafeArea(
+  child: Text("Won't overlap the notch"),
+)</pre>
+</div>
+
+<div class="card">
+  <h2>Drawer</h2>
+  <p class="def">A slide-out side menu, usually opened from the AppBar's hamburger icon.</p>
+  <pre>Scaffold(
+  appBar: AppBar(title: Text("App")),
+  drawer: Drawer(
+    child: ListView(
+      children: [
+        DrawerHeader(child: Text("Menu")),
+        ListTile(title: Text("Home"), onTap: () {}),
+      ],
+    ),
+  ),
+)</pre>
+</div>
+
+<div class="card">
+  <h2>BottomNavigationBar</h2>
+  <p class="def">A bar of tappable icons at the bottom of the screen for switching between main sections.</p>
+  <pre>BottomNavigationBar(
+  currentIndex: selectedIndex,
+  onTap: (index) =&gt; setState(() =&gt; selectedIndex = index),
+  items: [
+    BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+    BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+  ],
+)</pre>
+</div>
+
+<div class="card">
+  <h2>TabBar &amp; TabBarView</h2>
+  <p class="def">Creates swipeable tabs, like top-level category switches within a screen.</p>
+  <pre>DefaultTabController(
+  length: 2,
+  child: Scaffold(
+    appBar: AppBar(
+      bottom: TabBar(tabs: [Tab(text: "One"), Tab(text: "Two")]),
+    ),
+    body: TabBarView(
+      children: [Text("Page One"), Text("Page Two")],
+    ),
+  ),
+)</pre>
+</div>
+
+<div class="card">
+  <h2>PageView</h2>
+  <p class="def">A full-screen swipeable set of pages, like an image carousel or onboarding flow.</p>
+  <pre>PageView(
+  children: [
+    Container(color: Colors.red),
+    Container(color: Colors.green),
+    Container(color: Colors.blue),
+  ],
+)</pre>
+</div>
+
+<div class="card">
+  <h2>AlertDialog</h2>
+  <p class="def">A popup box that interrupts the user to confirm an action or show a message.</p>
+  <pre>showDialog(
+  context: context,
+  builder: (context) =&gt; AlertDialog(
+    title: Text("Delete item?"),
+    actions: [
+      TextButton(onPressed: () =&gt; Navigator.pop(context), child: Text("Cancel")),
+      TextButton(onPressed: () {}, child: Text("Delete")),
+    ],
+  ),
+)</pre>
+</div>
+
+<div class="card">
+  <h2>SnackBar</h2>
+  <p class="def">A small message bar that briefly pops up from the bottom of the screen.</p>
+  <pre>ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(content: Text("Saved successfully")),
+)</pre>
+</div>
+
+<div class="card">
+  <h2>Progress Indicators</h2>
+  <p class="def">Spinners or bars that show the app is loading or working on something.</p>
+  <pre>CircularProgressIndicator()
+
+LinearProgressIndicator(value: 0.6) // 60% complete</pre>
+</div>
+
+<div class="card">
+  <h2>StreamBuilder</h2>
+  <p class="def">Like FutureBuilder, but rebuilds the UI repeatedly as new values arrive over time.</p>
+  <pre>StreamBuilder&lt;int&gt;(
+  stream: counterStream,
+  builder: (context, snapshot) {
+    if (!snapshot.hasData) return CircularProgressIndicator();
+    return Text("Count: ${snapshot.data}");
+  },
+)</pre>
+</div>
+
+<div class="card">
+  <h2>ExpansionTile</h2>
+  <p class="def">A list item that expands to reveal more content when tapped, like an accordion.</p>
+  <pre>ExpansionTile(
+  title: Text("More info"),
+  children: [
+    ListTile(title: Text("Detail 1")),
+    ListTile(title: Text("Detail 2")),
+  ],
+)</pre>
+</div>
+
+<div class="card">
+  <h2>GridView</h2>
+  <p class="def">A scrollable widget that arranges items in a grid of rows and columns.</p>
+  <pre>// Fixed column count
+GridView.count(
+  crossAxisCount: 2,
+  children: List.generate(4, (i) {
+    return Container(
+      color: Colors.orange,
+      margin: EdgeInsets.all(4),
+      child: Center(child: Text("Item $i")),
+    );
+  }),
+)
+
+// Large/dynamic grid (lazy loaded)
+GridView.builder(
+  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 3,
+  ),
+  itemCount: items.length,
+  itemBuilder: (context, index) =&gt; Container(color: Colors.teal),
+)</pre>
+</div>
+
+<div class="card">
+  <h2>Buttons</h2>
+  <p class="def">Tappable widgets that trigger an action when pressed.</p>
+  <pre>ElevatedButton(
+  onPressed: () =&gt; print("Pressed"),
+  child: Text("Elevated"),
+)
+
+TextButton(
+  onPressed: () {},
+  child: Text("Text Button"),
+)
+
+IconButton(
+  icon: Icon(Icons.add),
+  onPressed: () {},
+)</pre>
+</div>
+
+<div class="card">
+  <h2>TextField</h2>
+  <p class="def">An input box that lets the user type and edit text.</p>
+  <pre>final nameController = TextEditingController();
+
+TextField(
+  controller: nameController,
+  decoration: InputDecoration(
+    labelText: "Enter name",
+    border: OutlineInputBorder(),
+  ),
+  onChanged: (value) =&gt; print(value),
+)
+
+// read the current text anytime
+print(nameController.text);
+
+// set text programmatically
+nameController.text = "Sam";
+
+// clear the field
+nameController.clear();
+
+// always dispose in a StatefulWidget
+@override
+void dispose() {
+  nameController.dispose();
+  super.dispose();
+}</pre>
+  <p class="note">Use <code class="inline">controller</code> when you need to read, set, or clear the text from code (not just <code class="inline">onChanged</code>).</p>
+</div>
+
+<div class="card">
+  <h2>Image</h2>
+  <p class="def">Displays a picture from the internet, local assets, or device storage.</p>
+  <pre>Image.network(
+  'https://picsum.photos/200',
+  width: 150,
+  height: 150,
+  fit: BoxFit.cover,
+)
+
+Image.asset('assets/logo.png')</pre>
+</div>
+
+<div class="card">
+  <h2>Scaffold &amp; AppBar</h2>
+  <p class="def">Scaffold is the basic page skeleton (app bar, body, buttons); AppBar is the top title bar.</p>
+  <pre>Scaffold(
+  appBar: AppBar(title: Text("My App")),
+  body: Center(child: Text("Content")),
+  floatingActionButton: FloatingActionButton(
+    onPressed: () {},
+    child: Icon(Icons.add),
+  ),
+)</pre>
+  <p class="note">Scaffold gives the basic Material page structure: app bar, body, drawer, FAB.</p>
+</div>
+
+<div class="card">
+  <h2>Card</h2>
+  <p class="def">A rounded, shadowed panel used to group related content, like a paper card on a table.</p>
+  <pre>Card(
+  elevation: 4,
+  child: Padding(
+    padding: EdgeInsets.all(12),
+    child: Text("Card content"),
+  ),
+)</pre>
+</div>
+
+<div class="card">
+  <h2>SizedBox &amp; Padding</h2>
+  <p class="def">SizedBox adds empty space of a fixed size; Padding adds space around a widget's edges.</p>
+  <pre>SizedBox(height: 20) // spacer
+
+Padding(
+  padding: EdgeInsets.all(16),
+  child: Text("Padded text"),
+)</pre>
+</div>
+
+<div class="card">
+  <h2>Navigation</h2>
+  <p class="def">Moving between screens (pages) in an app, like flipping to a new page or going back.</p>
+  <pre>// Go to new screen
+Navigator.push(
+  context,
+  MaterialPageRoute(builder: (context) =&gt; SecondScreen()),
+);
+
+// Go back
+Navigator.pop(context);</pre>
+</div>
+
+<div class="card">
+  <h2>Checkbox &amp; Switch</h2>
+  <p class="def">Checkbox is a tickable box for yes/no choices; Switch is a sliding on/off toggle.</p>
+  <pre>Checkbox(
+  value: isChecked,
+  onChanged: (val) =&gt; setState(() =&gt; isChecked = val!),
+)
+
+Switch(
+  value: isOn,
+  onChanged: (val) =&gt; setState(() =&gt; isOn = val),
+)</pre>
+</div>
+
+<div class="card">
+  <h2>FutureBuilder</h2>
+  <p class="def">A widget that automatically rebuilds itself based on the result of a Future (like a loading spinner then data).</p>
+  <pre>FutureBuilder&lt;String&gt;(
+  future: fetchData(),
+  builder: (context, snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return CircularProgressIndicator();
+    } else if (snapshot.hasError) {
+      return Text("Error: ${snapshot.error}");
+    } else {
+      return Text(snapshot.data!);
+    }
+  },
+)</pre>
+  <p class="note">Rebuilds UI based on a Future's state — perfect for API calls.</p>
+</div>
+
+<div class="card">
+  <h2>Controllers &amp; Keys <span class="tag">FLUTTER</span></h2>
+  <p class="def">Controllers let code talk to a widget directly (read/change its value); Keys let Flutter tell widgets apart.</p>
+
+  <h3>TextEditingController</h3>
+  <pre>final controller = TextEditingController();
+TextField(controller: controller);
+controller.text;      // read
+controller.clear();   // clear</pre>
+
+  <h3>GlobalKey&lt;FormState&gt;</h3>
+  <pre>final formKey = GlobalKey&lt;FormState&gt;();
+Form(key: formKey, child: /* fields */);
+formKey.currentState!.validate();
+formKey.currentState!.save();</pre>
+
+  <h3>ScrollController</h3>
+  <pre>final scrollController = ScrollController();
+ListView(controller: scrollController);
+scrollController.animateTo(
+  0,
+  duration: Duration(milliseconds: 300),
+  curve: Curves.easeOut,
+);</pre>
+
+  <h3>PageController</h3>
+  <pre>final pageController = PageController();
+PageView(controller: pageController);
+pageController.nextPage(
+  duration: Duration(milliseconds: 300),
+  curve: Curves.ease,
+);</pre>
+
+  <h3>TabController</h3>
+  <pre>// needs "with SingleTickerProviderStateMixin" on the State class
+late TabController tabController =
+    TabController(length: 2, vsync: this);
+TabBar(controller: tabController);</pre>
+
+  <h3>AnimationController</h3>
+  <pre>// needs "with SingleTickerProviderStateMixin"
+late AnimationController animController = AnimationController(
+  duration: Duration(seconds: 1),
+  vsync: this,
+);
+animController.forward(); // start animation</pre>
+
+  <h3>GlobalKey (general)</h3>
+  <pre>final widgetKey = GlobalKey();
+Container(key: widgetKey);
+// access the widget's state/size/position from code</pre>
+
+  <p class="note">Rule of thumb: any controller created in a StatefulWidget must be disposed in <code class="inline">dispose()</code> to avoid memory leaks.</p>
+  <pre>@override
+void dispose() {
+  controller.dispose();
+  scrollController.dispose();
+  pageController.dispose();
+  tabController.dispose();
+  animController.dispose();
+  super.dispose();
+}</pre>
+</div>
+
+</div>
+
+</body>
+</html>
