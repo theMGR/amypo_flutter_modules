@@ -1,0 +1,6 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="common widgets demo" type="FlutterRunConfigurationType" factoryName="Flutter">
+    <option name="filePath" value="$PROJECT_DIR$/lib/flutter_basics/common_widgets_demo.dart" />
+    <method v="2" />
+  </configuration>
+</component>
