@@ -18,7 +18,6 @@ class Post {
     required this.body,
   });
 
-  // Convert JSON (Map) -> Post object
   factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
       id: json['id'] as int?,
@@ -28,7 +27,6 @@ class Post {
     );
   }
 
-  // Convert Post object -> JSON (Map) for sending in a POST request
   Map<String, dynamic> toJson() {
     return {
       'userId': userId,
@@ -42,14 +40,52 @@ class Post {
 }
 
 // ---------------------------------------------------------------------------
-// API service - keeps HTTP logic separate from the UI
+// API service - keeps HTTP logic + logging separate from the UI
 // ---------------------------------------------------------------------------
 class PostApiService {
   static const String _baseUrl = 'https://jsonplaceholder.typicode.com/posts';
 
+  final JsonEncoder _prettyJson = const JsonEncoder.withIndent('  ');
+
+  void _logRequest({
+    required String method,
+    required Uri url,
+    Map<String, String>? headers,
+    Object? body,
+  }) {
+    final logMap = {
+      'method': method,
+      'url': url.toString(),
+      if (headers != null) 'headers': headers,
+      if (body != null) 'body': body,
+    };
+    debugPrint('---- REQUEST ----');
+    debugPrint(_prettyJson.convert(logMap));
+  }
+
+  void _logResponse(http.Response response) {
+    Object? decodedBody;
+    try {
+      decodedBody = jsonDecode(response.body);
+    } catch (_) {
+      decodedBody = response.body; // not valid JSON, log as raw string
+    }
+
+    final logMap = {
+      'statusCode': response.statusCode,
+      'headers': response.headers,
+      'body': decodedBody,
+    };
+    debugPrint('---- RESPONSE ----');
+    debugPrint(_prettyJson.convert(logMap));
+  }
+
   Future<Post> getPost(int id) async {
     final url = Uri.parse('$_baseUrl/$id');
+    _logRequest(method: 'GET', url: url);
+
     final response = await http.get(url);
+    _logResponse(response);
 
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body) as Map<String, dynamic>;
@@ -61,11 +97,17 @@ class PostApiService {
 
   Future<Post> createPost(Post post) async {
     final url = Uri.parse(_baseUrl);
+    final headers = {'Content-Type': 'application/json; charset=UTF-8'};
+    final bodyMap = post.toJson();
+
+    _logRequest(method: 'POST', url: url, headers: headers, body: bodyMap);
+
     final response = await http.post(
       url,
-      headers: {'Content-Type': 'application/json; charset=UTF-8'},
-      body: jsonEncode(post.toJson()),
+      headers: headers,
+      body: jsonEncode(bodyMap),
     );
+    _logResponse(response);
 
     if (response.statusCode == 201) {
       final json = jsonDecode(response.body) as Map<String, dynamic>;
@@ -97,6 +139,7 @@ class _ApiDemoState extends State<ApiDemo> {
         _result = 'GET success: ${post.title}';
       });
     } catch (e) {
+      debugPrint('---- REQUEST ERROR ----\n$e');
       setState(() {
         _result = 'GET error: $e';
       });
@@ -112,6 +155,7 @@ class _ApiDemoState extends State<ApiDemo> {
         _result = 'POST success: id=${created.id}';
       });
     } catch (e) {
+      debugPrint('---- REQUEST ERROR ----\n$e');
       setState(() {
         _result = 'POST error: $e';
       });
@@ -121,7 +165,7 @@ class _ApiDemoState extends State<ApiDemo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('HTTP GET/POST Demo (DTO)')),
+      appBar: AppBar(title: const Text('HTTP GET/POST Demo (DTO + Logging)')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
