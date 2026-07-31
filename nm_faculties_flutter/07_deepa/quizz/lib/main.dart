@@ -1,66 +1,109 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const QuizApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class QuizApp extends StatelessWidget {
+  const QuizApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      debugShowCheckedModeBanner: false,
+      home: QuizScreen(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-
-  final String title;
-
+class QuizScreen extends StatefulWidget {
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<QuizScreen> createState() => _QuizScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _QuizScreenState extends State<QuizScreen> {
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  String result = "";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: const Text("Simple Quiz App"),
+        backgroundColor: Colors.blue,
       ),
-      body: Center(
+
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+
         child: Column(
-          mainAxisAlignment: .center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('You have pushed the button this many times:'),
+
+            const Text(
+              "Question:",
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            const Text(
+              "What is flutter?",
+              style: TextStyle(fontSize: 20),
+            ),
+
+            const SizedBox(height: 20),
+
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  result = "Wrong Answer";
+                });
+              },
+              child: const Text(". Programming Language"),
+            ),
+
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  result = "Correct Answer";
+                });
+              },
+              child: const Text(". Mobile App Development Framework"),
+            ),
+
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  result = "Wrong Answer";
+                });
+              },
+              child: const Text("Database"),
+            ),
+
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  result = "Wrong Answer";
+                });
+              },
+              child: const Text("Amazon"),
+            ),
+
+            const SizedBox(height: 30),
+
             Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+              result,
+              style: const TextStyle(
+                fontSize: 22,
+                color: Colors.red,
+              ),
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }
