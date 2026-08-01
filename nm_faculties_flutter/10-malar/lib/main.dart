@@ -1,5 +1,8 @@
-import 'dart:io';
+import 'package:flutter/material.dart';
 
+void main() {
+  runApp(const MyApp());
+}
 
 class BankAccount {
   String accountHolder;
@@ -11,79 +14,149 @@ class BankAccount {
   void deposit(double amount) {
     if (amount > 0) {
       balance += amount;
-      print("₹$amount deposited successfully.");
-    } else {
-      print("Invalid deposit amount.");
     }
   }
 
   void withdraw(double amount) {
-    if (amount <= 0) {
-      print("Invalid withdrawal amount.");
-    } else if (amount > balance) {
-      print("Insufficient balance.");
-    } else {
+    if (amount > 0 && amount <= balance) {
       balance -= amount;
-      print("₹$amount withdrawn successfully.");
     }
-  }
-
-  void showDetails() {
-    print("\n------ Account Details ------");
-    print("Account Holder : $accountHolder");
-    print("Account Number : $accountNumber");
-    print("Balance        : ₹${balance.toStringAsFixed(2)}");
-    print("-----------------------------");
   }
 }
 
-void main() {
-  print("===== BANK MANAGEMENT SYSTEM =====");
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
-  stdout.write("Enter Account Holder Name: ");
-  String name = stdin.readLineSync()!;
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: "Bank Management",
+      home: const BankPage(),
+    );
+  }
+}
 
-  stdout.write("Enter Account Number: ");
-  int accNo = int.parse(stdin.readLineSync()!);
+class BankPage extends StatefulWidget {
+  const BankPage({super.key});
 
-  stdout.write("Enter Initial Deposit: ");
-  double initialBalance = double.parse(stdin.readLineSync()!);
+  @override
+  State<BankPage> createState() => _BankPageState();
+}
 
-  BankAccount account = BankAccount(name, accNo, initialBalance);
+class _BankPageState extends State<BankPage> {
+  final nameController = TextEditingController();
+  final accController = TextEditingController();
+  final amountController = TextEditingController();
 
-  while (true) {
-    print("\n===== MENU =====");
-    print("1. Deposit");
-    print("2. Withdraw");
-    print("3. Check Balance");
-    print("4. Exit");
+  BankAccount? account;
+  String message = "";
 
-    stdout.write("Enter your choice: ");
-    int choice = int.parse(stdin.readLineSync()!);
-
-    switch (choice) {
-      case 1:
-        stdout.write("Enter deposit amount: ");
-        double amount = double.parse(stdin.readLineSync()!);
-        account.deposit(amount);
-        break;
-
-      case 2:
-        stdout.write("Enter withdrawal amount: ");
-        double amount = double.parse(stdin.readLineSync()!);
-        account.withdraw(amount);
-        break;
-
-      case 3:
-        account.showDetails();
-        break;
-
-      case 4:
-        print("Thank you for using the Bank Management System!");
-        return;
-
-      default:
-        print("Invalid choice. Please try again.");
-    }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Bank Management System"),
+        backgroundColor: Colors.blue,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            TextField(
+              controller: nameController,
+              decoration:
+              const InputDecoration(labelText: "Account Holder"),
+            ),
+            TextField(
+              controller: accController,
+              keyboardType: TextInputType.number,
+              decoration:
+              const InputDecoration(labelText: "Account Number"),
+            ),
+            TextField(
+              controller: amountController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                  labelText: "Initial Balance / Amount"),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  account = BankAccount(
+                    nameController.text,
+                    int.parse(accController.text),
+                    double.parse(amountController.text),
+                  );
+                  message = "Account Created Successfully";
+                });
+              },
+              child: const Text("Create Account"),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: account == null
+                  ? null
+                  : () {
+                double amount =
+                double.parse(amountController.text);
+                setState(() {
+                  account!.deposit(amount);
+                  message = "₹$amount Deposited";
+                });
+              },
+              child: const Text("Deposit"),
+            ),
+            ElevatedButton(
+              onPressed: account == null
+                  ? null
+                  : () {
+                double amount =
+                double.parse(amountController.text);
+                setState(() {
+                  if (amount <= account!.balance) {
+                    account!.withdraw(amount);
+                    message = "₹$amount Withdrawn";
+                  } else {
+                    message = "Insufficient Balance";
+                  }
+                });
+              },
+              child: const Text("Withdraw"),
+            ),
+            const SizedBox(height: 20),
+            if (account != null)
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      Text("Name: ${account!.accountHolder}",
+                          style: const TextStyle(fontSize: 18)),
+                      Text("Account No: ${account!.accountNumber}",
+                          style: const TextStyle(fontSize: 18)),
+                      Text(
+                        "Balance: ₹${account!.balance.toStringAsFixed(2)}",
+                        style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            const SizedBox(height: 20),
+            Text(
+              message,
+              style: const TextStyle(
+                  color: Colors.green,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
